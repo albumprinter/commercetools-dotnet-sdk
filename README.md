@@ -9,7 +9,7 @@ For more documentation please see [the wiki](//github.com/commercetools/commerce
 
 ## Supported Platforms
 
-* .NET Framework 4.5 and 4.6
+* .NET Framework 4.6
 
 ## Using the SDK
 
