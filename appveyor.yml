@@ -1,14 +1,18 @@
-build_script: 
-  - ps: .\build.ps1 -Target "Appveyor"
+# Version for the build. We make it clear that it's
+# Appveyor as this isn't a version we expect to make
+version: 1.0.{build}-appveyor
 
-# disable built-in tests.
+image: Visual Studio 2017
+
+branches:
+  only:
+    - master
+
+# Perform the build.
+build_script:
+  - dotnet --info
+  - dotnet restore
+  - dotnet build
+
+# The tests are run as part of the build.
 test: off
-
-deploy:
-- provider: NuGet
-  server: https://www.myget.org/F/commercetools-dotnet-sdk/api/v2/package
-  api_key:
-    secure: wODMBph/C6fpMj92W0EfeV0teSwNDK69RdAxys+4VHbEgv/Cqrwino+Q1rLGBc5w
-  skip_symbols: true
-  on:
-    branch: master
