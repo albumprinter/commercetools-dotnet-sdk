@@ -6,6 +6,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "commercetools.NETStandard",
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "commercetools.Tests", "commercetools.Tests\commercetools.Tests.csproj", "{ABD3EC9E-70C6-444E-87E7-73DDFBCDF9C3}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "commercetools.Test", "commercetools.Test\commercetools.Test.csproj", "{49B9D0AE-95C5-41BC-9D40-9ABD280FA258}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -20,6 +22,10 @@ Global
 		{ABD3EC9E-70C6-444E-87E7-73DDFBCDF9C3}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{ABD3EC9E-70C6-444E-87E7-73DDFBCDF9C3}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{ABD3EC9E-70C6-444E-87E7-73DDFBCDF9C3}.Release|Any CPU.Build.0 = Release|Any CPU
+		{49B9D0AE-95C5-41BC-9D40-9ABD280FA258}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{49B9D0AE-95C5-41BC-9D40-9ABD280FA258}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{49B9D0AE-95C5-41BC-9D40-9ABD280FA258}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{49B9D0AE-95C5-41BC-9D40-9ABD280FA258}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
