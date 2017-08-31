@@ -5,7 +5,7 @@
 
 The commercetools.NET SDK allows developers to work effectively with the commercetools platform in their .NET applications by providing typesafe access to the commercetools HTTP API.
 
-For more documentation please see [the wiki](//github.com/commercetools/commercetools-dotnet-sdk/wiki/commercetools-.NET-SDK-documentation)
+For more documentation please see [the wiki](//github.com/albumprinter/commercetools-dotnet-sdk/wiki/commercetools-.NET-SDK-documentation)
 
 ## Supported Platforms
 
