@@ -8,7 +8,7 @@ environment:
 version: 1.0.{build}-appveyor
 install:
   - ps: >-
-      $displayVersion = (gitversion /showVariable FullSemVer);Update-AppveyorBuild -Version $displayVersion;
+      $displayVersion = (gitversion /showVariable FullSemVer);Try{Update-AppveyorBuild -Version $displayVersion;}Catch{Update-AppveyorBuild -Version "$displayVersion-$env:APPVEYOR_BUILD_NUMBER";}
 image: Visual Studio 2017
 dotnet_csproj:
   patch: true
