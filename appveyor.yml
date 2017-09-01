@@ -26,7 +26,7 @@ after_build:
         dotnet pack ./commercetools.NETStandard/commercetools.NETStandard.csproj -c Release
       }
 artifacts:
-  - path: '**\*.nupkg'
+  - path: 'src\**\*.nupkg'
     name: NuGet
 # The tests are run as part of the build.
 test: off
