@@ -4,6 +4,12 @@ version: 1.0.{build}-appveyor
 
 image: Visual Studio 2017
 
+dotnet_csproj:
+  patch: true
+  file: 'commercetools.NETStandard\commercetools.NETStandard.csproj'
+  version: '{version}'
+  package_version: '{version}'
+  
 branches:
   only:
     - master
