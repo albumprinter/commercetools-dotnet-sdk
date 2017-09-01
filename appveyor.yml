@@ -16,9 +16,7 @@ dotnet_csproj:
   version: '{version}'
   package_version: '{version}'
 build_script:
-  - dotnet --info
-  - dotnet restore .\src\
-  - dotnet build -c Release .\src\
+  - ps: .\build.ps1
   - ps: >-
       ./inject_devcommerce_keys.ps1
 after_build:
