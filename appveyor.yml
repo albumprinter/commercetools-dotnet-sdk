@@ -1,7 +1,9 @@
 # Version for the build. We make it clear that it's
 # Appveyor as this isn't a version we expect to make
 init:
-  - $version = gitversion /showVariable FullSemVer
+  - ps: >-
+      $version = gitversion /showVariable FullSemVer
+
 image: Visual Studio 2017
 
 dotnet_csproj:
