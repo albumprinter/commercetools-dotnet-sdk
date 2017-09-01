@@ -21,7 +21,6 @@ build_script:
   - dotnet build
   - ps: >-
       ./inject_devcommerce_keys.ps1
-  - dotnet test ./commercetools.Test/commercetools.Test.csproj
 after_build:
   - dotnet pack ./commercetools.NETStandard/commercetools.NETStandard.csproj
 artifacts:
