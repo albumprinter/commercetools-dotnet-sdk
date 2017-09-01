@@ -24,7 +24,7 @@ build_script:
 after_build:
   - dotnet test ./commercetools.Test/commercetools.Test.csproj
   - ps: >-
-      If ($env:APPVEYOR_REPO_TAG) {
+      If ($env:APPVEYOR_REPO_TAG -eq $true) {
         dotnet pack ./commercetools.NETStandard/commercetools.NETStandard.csproj -c Release
       }
 artifacts:
