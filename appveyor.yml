@@ -2,12 +2,6 @@
 # Appveyor as this isn't a version we expect to make
 version: 1.0.{build}-appveyor
 init:
-  - ps: >-
-      ls;
-      ls .git;
-      $displayVersion = gitversion /showVariable FullSemVer;
-      echo $displayVersion;
-      Update-AppveyorBuild -Version ($displayVersion | Out-String);
 image: Visual Studio 2017
 dotnet_csproj:
   patch: true
@@ -19,6 +13,9 @@ branches:
     - master
 # Perform the build.
 build_script:
+  - $displayVersion = gitversion /showVariable FullSemVer;
+  - echo $displayVersion;
+  - Update-AppveyorBuild -Version ($displayVersion | Out-String);
   - dotnet --info
   - dotnet restore
   - dotnet build
