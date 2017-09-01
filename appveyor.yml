@@ -18,12 +18,12 @@ dotnet_csproj:
 build_script:
   - dotnet --info
   - dotnet restore
-  - dotnet build
+  - dotnet build -c Release
   - ps: >-
       ./inject_devcommerce_keys.ps1
-  - dotnet test
 after_build:
-  - dotnet pack ./commercetools.NETStandard/commercetools.NETStandard.csproj
+  - dotnet test ./commercetools.Test/commercetools.Test.csproj
+  - dotnet pack ./commercetools.NETStandard/commercetools.NETStandard.csproj -c Release
 artifacts:
   - path: '**\*.nupkg'
     name: NuGet
