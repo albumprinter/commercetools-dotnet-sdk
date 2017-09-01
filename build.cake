@@ -16,10 +16,16 @@ Task("Restore").Does(() => {
 });
 
 Task("Build").Does(() => {
-    var settings = new DotNetCoreBuildSettings {
-        Configuration = "Release"
+    var settingsStd = new DotNetCoreBuildSettings {
+        Configuration = "Release",
+        Framework = "netstandard1.3"
     };
-    DotNetCoreBuild(src, settings);
+    var settingsCore = new DotNetCoreBuildSettings {
+        Configuration = "Release"
+        Framework = "netcoreapp1.1"
+    };
+    DotNetCoreBuild(src + "commercetools.NETStandard", settingsStd);
+    DotNetCoreBuild(src + "commercetools.Test", settingsCore);
 });
 
 
