@@ -3,7 +3,7 @@
 version: 1.0.{build}-appveyor
 install:
   - ps: >-
-      $displayVersion = gitversion /showVariable FullSemVer;Update-AppveyorBuild -Version $displayVersion;
+      $displayVersion = (gitversion /showVariable FullSemVer).replace('+','P');Update-AppveyorBuild -Version $displayVersion;
 image: Visual Studio 2017
 dotnet_csproj:
   patch: true
@@ -19,7 +19,7 @@ build_script:
   - dotnet restore
   - dotnet build
 after_build:
-  - dotnet pack
+  - dotnet pack ~/commercetools.NETStandard/commercetools.NETStandard.csproj
 artifacts:
   - path: '**\*.nupkg'
     name: NuGet
