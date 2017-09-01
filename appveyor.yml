@@ -1,27 +1,23 @@
 # Version for the build. We make it clear that it's
 # Appveyor as this isn't a version we expect to make
-
+version: 1.0.{build}-appveyor
 init:
   - ps: >-
       $displayVersion = gitversion /showVariable FullSemVer;
       Update-AppveyorBuild -Version "$displayVersion";
 image: Visual Studio 2017
-
 dotnet_csproj:
   patch: true
   file: 'commercetools.NETStandard\commercetools.NETStandard.csproj'
   version: '{version}'
   package_version: '{version}'
-  
 branches:
   only:
     - master
-
 # Perform the build.
 build_script:
   - dotnet --info
   - dotnet restore
   - dotnet build
-
 # The tests are run as part of the build.
 test: off
