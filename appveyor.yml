@@ -23,7 +23,10 @@ build_script:
       ./inject_devcommerce_keys.ps1
 after_build:
   - dotnet test ./commercetools.Test/commercetools.Test.csproj
-  - dotnet pack ./commercetools.NETStandard/commercetools.NETStandard.csproj -c Release
+  - ps: >-
+      If ($env:APPVEYOR_REPO_TAG) {
+        dotnet pack ./commercetools.NETStandard/commercetools.NETStandard.csproj -c Release
+      }
 artifacts:
   - path: '**\*.nupkg'
     name: NuGet
