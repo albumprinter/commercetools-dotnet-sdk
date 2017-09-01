@@ -20,7 +20,7 @@ build_script:
   - dotnet build
 after_build:
   - ps: >-
-    cd commercetools.NETStandard;nuget spec;nuget pack;
+      cd commercetools.NETStandard;nuget spec;nuget pack;
 artifacts:
   - path: '**\*.nupkg'
     name: NuGet
