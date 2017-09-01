@@ -3,9 +3,7 @@
 version: 1.0.{build}-appveyor
 install:
   - ps: >-
-      $displayVersion = gitversion /showVariable FullSemVer;
-      echo $displayVersion;
-      Update-AppveyorBuild -Version ($displayVersion | Out-String);
+      $displayVersion = gitversion /showVariable FullSemVer;Update-AppveyorBuild -Version $displayVersion;
 image: Visual Studio 2017
 dotnet_csproj:
   patch: true
