@@ -12,17 +12,17 @@ install:
 image: Visual Studio 2017
 dotnet_csproj:
   patch: true
-  file: 'commercetools.NETStandard\commercetools.NETStandard.csproj'
+  file: 'src\commercetools.NETStandard\commercetools.NETStandard.csproj'
   version: '{version}'
   package_version: '{version}'
 build_script:
   - dotnet --info
   - dotnet restore
-  - dotnet build -c Release
+  - dotnet build -c Release .\src\
   - ps: >-
       ./inject_devcommerce_keys.ps1
 after_build:
-  - dotnet test ./commercetools.Test/commercetools.Test.csproj
+ # - dotnet test ./commercetools.Test/commercetools.Test.csproj
   - ps: >-
       If ($env:APPVEYOR_REPO_TAG -eq $true) {
         dotnet pack ./commercetools.NETStandard/commercetools.NETStandard.csproj -c Release
