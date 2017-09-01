@@ -19,8 +19,7 @@ build_script:
   - dotnet restore
   - dotnet build
 after_build:
-  - ps: >-
-      cd commercetools.NETStandard;nuget pack commercetools.NETStandard.csproj;
+  - dotnet pack
 artifacts:
   - path: '**\*.nupkg'
     name: NuGet
