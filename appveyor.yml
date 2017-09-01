@@ -3,17 +3,13 @@
 version: 1.0.{build}-appveyor
 install:
   - ps: >-
-      $displayVersion = (gitversion /showVariable FullSemVer).replace('+','-');Update-AppveyorBuild -Version $displayVersion;
+      $displayVersion = (gitversion /showVariable FullSemVer);Update-AppveyorBuild -Version $displayVersion;
 image: Visual Studio 2017
 dotnet_csproj:
   patch: true
   file: 'commercetools.NETStandard\commercetools.NETStandard.csproj'
   version: '{version}'
   package_version: '{version}'
-branches:
-  only:
-    - master
-# Perform the build.
 build_script:
   - dotnet --info
   - dotnet restore
