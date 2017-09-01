@@ -1,6 +1,8 @@
 # Version for the build. We make it clear that it's
 # Appveyor as this isn't a version we expect to make
-version: 1.0.{build}-appveyor
+init:
+- cmd: "set appVeyorBuildVersion=%appveyor_build_version%\necho appVeyorBuildVersion:%appVeyorBuildVersion% \n\nset branch=%APPVEYOR_REPO_BRANCH%\necho branch:%branch%\n\nset gitVersion=%branch:~-3%\necho gitversion:%gitVersion%\n\nset newVersion=%gitVersion%.%APPVEYOR_BUILD_NUMBER%\necho %newVersion%\n\n"
+- cmd: appveyor UpdateBuild -Version "%newVersion%"
 
 image: Visual Studio 2017
 
