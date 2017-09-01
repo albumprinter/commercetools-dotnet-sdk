@@ -1,9 +1,14 @@
 # Version for the build. We make it clear that it's
 # Appveyor as this isn't a version we expect to make
+environment:
+  COMMERCETOOLS_CLIENT_ID:
+    secure: x1oYnxl/Iy4xmZUPwDU0ObmApjk64UbtHfYs1IAaB0U=
+  COMMERCETOOLS_CLIENT_SECRET:
+    secure: JAviAyDsfPK7IV+YyLOs+nDqWkb59K5HEFcAmoiHr39pU2mpgUT8dmmfBHlVWxB2
 version: 1.0.{build}-appveyor
 install:
   - ps: >-
-      $displayVersion = (gitversion /showVariable FullSemVer);Update-AppveyorBuild -Version $displayVersion;
+      $displayVersion = (gitversion /showVariable FullSemVer);Try{Update-AppveyorBuild -Version $displayVersion;}Catch{Update-AppveyorBuild -Version "$displayVersion-$env:APPVEYOR_BUILD_NUMBER";}
 image: Visual Studio 2017
 dotnet_csproj:
   patch: true
@@ -13,9 +18,15 @@ dotnet_csproj:
 build_script:
   - dotnet --info
   - dotnet restore
-  - dotnet build
+  - dotnet build -c Release
+  - ps: >-
+      ./inject_devcommerce_keys.ps1
 after_build:
-  - dotnet pack ./commercetools.NETStandard/commercetools.NETStandard.csproj
+  - dotnet test ./commercetools.Test/commercetools.Test.csproj
+  - ps: >-
+      If ($env:APPVEYOR_REPO_TAG -eq $true) {
+        dotnet pack ./commercetools.NETStandard/commercetools.NETStandard.csproj -c Release
+      }
 artifacts:
   - path: '**\*.nupkg'
     name: NuGet
