@@ -21,11 +21,11 @@ Task("Build").Does(() => {
         Framework = "netstandard1.3"
     };
     var settingsCore = new DotNetCoreBuildSettings {
-        Configuration = "Release"
+        Configuration = "Release",
         Framework = "netcoreapp1.1"
     };
-    DotNetCoreBuild(src + "commercetools.NETStandard", settingsStd);
-    DotNetCoreBuild(src + "commercetools.Test", settingsCore);
+    DotNetCoreBuild(src + "/commercetools.NETStandard", settingsStd);
+    DotNetCoreBuild(src + "/commercetools.Test", settingsCore);
 });
 
 
