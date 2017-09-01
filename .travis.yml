@@ -4,6 +4,4 @@ dist: trusty
 mono: none
 dotnet: 1.0.4
 script:
-   - dotnet restore
-   - dotnet build commercetools.NETStandard -f netstandard1.3
-   - dotnet build commercetools.Test -f netcoreapp1.1
+   - build.sh
