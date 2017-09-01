@@ -3,6 +3,8 @@
 version: 1.0.{build}-appveyor
 init:
   - ps: >-
+      ls
+      ls .git
       $displayVersion = gitversion /showVariable FullSemVer;
       echo $displayVersion;
       Update-AppveyorBuild -Version ($displayVersion | Out-String);
