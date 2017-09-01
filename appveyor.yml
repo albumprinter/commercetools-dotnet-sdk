@@ -18,5 +18,11 @@ build_script:
   - dotnet --info
   - dotnet restore
   - dotnet build
+after_build:
+  - ps: >-
+    cd commercetools.NETStandard;nuget spec;nuget pack;
+artifacts:
+  - path: '**\*.nupkg'
+    name: NuGet
 # The tests are run as part of the build.
 test: off
