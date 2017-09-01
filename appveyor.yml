@@ -1,40 +1,7 @@
 # Version for the build. We make it clear that it's
 # Appveyor as this isn't a version we expect to make
 init:
-  - ps: >-
-      $ErrorActionPreference='Stop';
-      $branch = $env:APPVEYOR_REPO_BRANCH;
-      $buildNumber = $env:APPVEYOR_BUILD_NUMBER;
-      $num = '(0|[1-9]{1}[0-9]{0,})';
-      $rx = "^[a-z\-]+/v(?'ver'$num\.$num\.$num)(-(?'preSpec'[a-zA-Z]{1,}[0-9]{0,})){0,1}$";
-      $match = [regex]::match($branch, $rx);
-      if (!$match.Success)
-      {
-          throw "Branch name is not correct semver (1.0.0): " + $branch;
-      }
-      $version = $match.Groups['ver'].Value;
-      $preReleaseSpec = $match.Groups['preSpec'].Value;
-      $assemblyVersion = $version + ".0";
-      $fileVersion = $version + "." + $buildNumber;
-      $informationalVersion = $version;
-      if ("" -eq $preReleaseSpec)
-      {
-          $informationalVersion = $version + "." + $buildNumber;
-      }
-      else
-      {
-          $informationalVersion = $version + "-" + $preReleaseSpec + "-" + $buildNumber.PadLeft(6,'0');
-      }
-      $env:release_AssemblyVersion = $assemblyVersion;
-      $env:release_FileVersion = $fileVersion;
-      $env:release_InformationalVersion = $informationalVersion;
-      Write-Output "Versioning for a nuget release"
-      Write-Output "env:release_AssemblyVersion = $assemblyVersion"
-      Write-Output "env:release_FileVersion = $fileVersion"
-      Write-Output "env:release_InformationalVersion = $informationalVersion"
-      $displayVersion = "debug 01 " + $informationalVersion
-      Update-AppveyorBuild -Version $displayVersion
-
+  - $version = gitversion /showVariable FullSemVer
 image: Visual Studio 2017
 
 dotnet_csproj:
