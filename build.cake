@@ -66,6 +66,7 @@ Task("Publish")
         OutputDirectory = dst,
         VersionSuffix = revision
         };
+       Information("VersionSuffix: {0}", revision);
         DotNetCorePack(
             src + Directory("commercetools.NETStandard"), 
             settings);
