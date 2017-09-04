@@ -58,15 +58,17 @@ Task("Build").Does(() => {
     DotNetCoreBuild(src + Directory("commercetools.Test"), settingsCore);
 });
 
-Task("Publish").Does(() => {
-    var settings = new DotNetCorePackSettings {
+Task("Publish")
+    .WithCriteria(AppVeyor.IsRunningOnAppVeyor)
+    .Does(() => {
+        var settings = new DotNetCorePackSettings {
         Configuration = "Release",
         OutputDirectory = dst,
         VersionSuffix = revision
-    };
-    DotNetCorePack(
-        src + Directory("commercetools.NETStandard"), 
-        settings);
+        };
+        DotNetCorePack(
+            src + Directory("commercetools.NETStandard"), 
+            settings);
 });
 
 
