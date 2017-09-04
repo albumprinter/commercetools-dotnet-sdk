@@ -1,5 +1,3 @@
-#tool "nuget:?package=GitVersion.CommandLine"
-
 var src = Directory("./src");
 var dst = Directory("./artifacts");
 var reports = dst + Directory("./reports");
@@ -36,13 +34,6 @@ Task("Clean").Does(() => {
 Task("Restore").Does(() => {
     EnsureDirectoryExists(dst);
     DotNetCoreRestore(src);
-});
-
-Task("SetVersionInfo").Does(() =>
-{
-    versionInfo = GitVersion(new GitVersionSettings {
-        RepositoryPath = "."
-    });
 });
 
 
@@ -83,7 +74,6 @@ Task("Publish").Does(() => {
 
 Task("Default")
   .IsDependentOn("Clean")
-  .IsDependentOn("SetVersionInfo")
   .IsDependentOn("Restore")
   .IsDependentOn("Build")
   .IsDependentOn("Publish");
