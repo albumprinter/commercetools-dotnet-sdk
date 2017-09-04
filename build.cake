@@ -1,8 +1,6 @@
 var src = Directory("./src");
 var dst = Directory("./artifacts");
 var reports = dst + Directory("./reports");
-GitVersion versionInfo = null;
-
 var configuration = Argument("Configuration", "Release");
 
 // The build number to use in the version number of the built NuGet packages.
