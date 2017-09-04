@@ -15,6 +15,16 @@ Task("Restore").Does(() => {
     DotNetCoreRestore(src);
 });
 
+Task("Test").Does(() => {
+    var settings = new DotNetCoreTestSettings {
+        NoBuild = true,
+        Configuration = "Release"
+    };
+    foreach(var file in GetFiles(src.Path + "/commercetools.Test/commercetools.Test.csproj")) {
+        DotNetCoreTest(file.FullPath, settings);
+    }
+});
+
 Task("Build").Does(() => {
     var settingsStd = new DotNetCoreBuildSettings {
         Configuration = "Release",
@@ -32,6 +42,7 @@ Task("Build").Does(() => {
 Task("Default")
   .IsDependentOn("Clean")
   .IsDependentOn("Restore")
-  .IsDependentOn("Build");
+  .IsDependentOn("Build")
+  .IsDependentOn("Test");
 
 RunTarget(Argument("target", "Default"));

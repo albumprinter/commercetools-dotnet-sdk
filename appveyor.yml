@@ -17,8 +17,6 @@ dotnet_csproj:
   package_version: '{version}'
 build_script:
   - ps: .\build.ps1
-  - ps: >-
-      ./inject_devcommerce_keys.ps1
 after_build:
  # - dotnet test ./commercetools.Test/commercetools.Test.csproj
   - ps: >-
