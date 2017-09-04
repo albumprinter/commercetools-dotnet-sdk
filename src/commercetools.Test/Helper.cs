@@ -17,6 +17,7 @@ using commercetools.ShippingMethods;
 using commercetools.TaxCategories;
 using commercetools.Types;
 using commercetools.Zones;
+using Microsoft.Extensions.Configuration;
 using Newtonsoft.Json;
 using Configuration = commercetools.Common.Configuration;
 using ReferenceType = commercetools.Common.ReferenceType;
@@ -41,17 +42,21 @@ namespace commercetools.Test
         /// <returns>Configuration</returns>
         public static Configuration GetConfiguration()
         {
-            var config = File.ReadAllText(Path.Combine(Directory.GetCurrentDirectory(),"appsettings.json"));
-            dynamic jsonConfig = JsonConvert.DeserializeObject(config);
+            var builder = new ConfigurationBuilder()
+                .SetBasePath(Directory.GetCurrentDirectory())
+                .AddJsonFile("appsettings.json", optional: true, reloadOnChange: true)
+                .AddEnvironmentVariables();
+
+            var config = builder.Build();
 
             if (_configuration == null)
             {
                 _configuration = new Configuration(
-                	jsonConfig["commercetoolsOAuthUrl"].ToString(),
-                	jsonConfig["commercetoolsApiUrl"].ToString(),
-                	jsonConfig["commercetoolsProjectKey"].ToString(),
-                	jsonConfig["commercetoolsClientID"].ToString(),
-                	jsonConfig["commercetoolsClientSecret"].ToString(),
+                    config["commercetoolsOAuthUrl"],
+                    config["commercetoolsApiUrl"],
+                    config["commercetoolsProjectKey"],
+                    config["commercetoolsClientID"],
+                    config["commercetoolsClientSecret"],
                     ProjectScope.ManageProject);
 			}
 
