@@ -1,11 +1,14 @@
 # Version for the build. We make it clear that it's
 # Appveyor as this isn't a version we expect to make
-environment:
-  COMMERCETOOLS_CLIENT_ID:
-    secure: x1oYnxl/Iy4xmZUPwDU0ObmApjk64UbtHfYs1IAaB0U=
-  COMMERCETOOLS_CLIENT_SECRET:
-    secure: JAviAyDsfPK7IV+YyLOs+nDqWkb59K5HEFcAmoiHr39pU2mpgUT8dmmfBHlVWxB2
+
 version: '{build}'
+pull_requests:
+  do_not_increment_build_number: true
+branches:
+  only:
+  - master
+nuget:
+  disable_publish_on_pr: true
 install:
   - ps: >-
       $displayVersion = (gitversion /showVariable FullSemVer);Try{Update-AppveyorBuild -Version $displayVersion;}Catch{Update-AppveyorBuild -Version "$displayVersion-$env:APPVEYOR_BUILD_NUMBER";}
@@ -24,7 +27,7 @@ after_build:
         dotnet pack ./commercetools.NETStandard/commercetools.NETStandard.csproj -c Release
       }
 artifacts:
-  - path: 'src\**\*.nupkg'
+  - path: 'artifacts\**\*.nupkg'
     name: NuGet
 # The tests are run as part of the build.
 test: off
