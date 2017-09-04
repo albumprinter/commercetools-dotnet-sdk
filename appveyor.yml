@@ -5,7 +5,7 @@ environment:
     secure: x1oYnxl/Iy4xmZUPwDU0ObmApjk64UbtHfYs1IAaB0U=
   COMMERCETOOLS_CLIENT_SECRET:
     secure: JAviAyDsfPK7IV+YyLOs+nDqWkb59K5HEFcAmoiHr39pU2mpgUT8dmmfBHlVWxB2
-version: 1.0.{build}-appveyor
+version: '{build}'
 install:
   - ps: >-
       $displayVersion = (gitversion /showVariable FullSemVer);Try{Update-AppveyorBuild -Version $displayVersion;}Catch{Update-AppveyorBuild -Version "$displayVersion-$env:APPVEYOR_BUILD_NUMBER";}
