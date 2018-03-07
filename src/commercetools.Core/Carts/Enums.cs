@@ -63,6 +63,7 @@
     {
         Platform,
         External,
+        ExternalAmount,
         Disabled
     }
 }

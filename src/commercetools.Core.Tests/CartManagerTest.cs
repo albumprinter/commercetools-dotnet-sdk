@@ -31,6 +31,7 @@ namespace commercetools.Core.Tests
         private Client _client;
         private Project.Project _project;
         private List<Cart> _testCarts;
+        private List<Cart> _testCartsExternalAmountTaxMode;
         private List<Customer> _testCustomers;
         private Payment _testPayment;
         private Product _testProduct;
@@ -58,6 +59,7 @@ namespace commercetools.Core.Tests
 
             _testCustomers = new List<Customer>();
             _testCarts = new List<Cart>();
+            _testCartsExternalAmountTaxMode = new List<Cart>();
 
             for (int i = 0; i < 5; i++)
             {
@@ -80,6 +82,19 @@ namespace commercetools.Core.Tests
                 Assert.NotNull(cart.Id);
 
                 _testCarts.Add(cart);
+
+                cartDraft = Helper.GetTestCartDraft(_project, customerCreatedMessage.Customer.Id);
+                cartDraft.TaxMode = TaxMode.ExternalAmount;
+                cartTask = _client.Carts().CreateCartAsync(cartDraft);
+                cartTask.Wait();
+                Assert.NotNull(cartTask.Result);
+                Assert.True(cartTask.Result.Success, "CreateCartAsync failed");
+                cart = cartTask.Result.Result;
+                Assert.True(cart.TaxMode == TaxMode.ExternalAmount, string.Format("Cart created using ExternalAmount TaxMode failed - TaxMode: {0}", cart.TaxMode));
+                Assert.NotNull(cart.Id);
+                Console.Error.WriteLine(string.Format("CartManagerTest - Information Only - Init TestCartDraft TaxMode: {0}", cartDraft.TaxMode == null ? "(default)" : cart.TaxMode.ToString()));
+
+                _testCartsExternalAmountTaxMode.Add(cart);
             }
 
             ProductTypeDraft productTypeDraft = Helper.GetTestProductTypeDraft();
@@ -178,6 +193,12 @@ namespace commercetools.Core.Tests
             Task task;
 
             foreach (Cart cart in _testCarts)
+            {
+                task = _client.Carts().DeleteCartAsync(cart);
+                task.Wait();
+            }
+
+            foreach (Cart cart in _testCartsExternalAmountTaxMode)
             {
                 task = _client.Carts().DeleteCartAsync(cart);
                 task.Wait();
@@ -373,6 +394,82 @@ namespace commercetools.Core.Tests
             Assert.NotNull(_testCarts[0].LineItems);
             Assert.Equal(_testCarts[0].LineItems.Count, 0);
         }
+
+        /// <summary>
+        /// Tests the CartManager.CreateCartAsync and CartManager.DeleteCartAsync methods for a cart in external tax mode with custom line items having an external tax rate.
+        /// </summary>
+        /// <see cref="CartManager.CreateCartAsync"/>
+        /// <seealso cref="CartManager.DeleteCartAsync(commercetools.Carts.Cart)"/>
+        [Fact]
+        public async Task ShouldCreateAndDeleteCartInExternalAmountTaxModeAndTestExternalAmountTaxModeOrientedActions()
+        {
+            CartDraft cartDraft = Helper.GetTestCartDraftWithCustomLineItemsUsingExternalAmountTaxMode(_project);
+            Response<Cart> response = await _client.Carts().CreateCartAsync(cartDraft);
+            Assert.True(response.Success);
+
+            Cart cart = response.Result;
+            Assert.True(cart.TaxMode == TaxMode.ExternalAmount, string.Format("Incorrect TaxMode: {0}", cart.TaxMode));
+            Assert.NotNull(cart.Id);
+            Assert.NotNull(cart.CustomLineItems);
+            Assert.True(cart.CustomLineItems.Count > 0);
+            Assert.NotNull(cart.CustomLineItems[0].TaxRate);
+            Assert.True(cart.Country == cartDraft.Country, "Country not the same");
+            Assert.True(cart.InventoryMode == cartDraft.InventoryMode, "InventoryMode not the same");
+            Assert.True(cart.ShippingAddress == cartDraft.ShippingAddress, "ShippingAddress not the same");
+            Assert.True(cart.BillingAddress == cartDraft.BillingAddress, "BillingAddress not the same");
+            SetCustomLineItemTaxAmountAction customLineItemTaxAmountAction = new SetCustomLineItemTaxAmountAction(cart.CustomLineItems[0].Id);
+            Money totalGross = new Money();
+            totalGross.CentAmount = 123;
+            totalGross.CurrencyCode = _project.Currencies[0];
+            List<SubRate> subRates = new List<SubRate>();
+            SubRate subRate = new SubRate();
+            subRate.Name = "sub-rate";
+            subRate.Amount = .5m;
+            subRates.Add(subRate);
+
+            //test success of CustomLineItemTaxAmountAction
+            customLineItemTaxAmountAction.ExternalTaxAmount = new ExternalTaxAmountDraft(totalGross, new ExternalTaxRateDraft("custom-line-item-ext-tax-rate-draft", cart.Country) { SubRates = subRates });
+            response = await _client.Carts().UpdateCartAsync(cart, customLineItemTaxAmountAction);
+            Assert.True(response.Success, "SetCustomLineItemTaxAmountAction Failed");
+            cart = response.Result;
+            Assert.True(cart.CustomLineItems[0].TaxRate.Amount == subRate.Amount, string.Format("Mismatching Tax Rates: {0} vs {1}", cart.CustomLineItems[0].TaxRate.Amount, subRate.Amount));
+
+            //test success of adding a standard line item and SetLineItemTaxAmountAction
+            response = await _client.Carts().UpdateCartAsync(cart, new AddLineItemAction(_testProduct.Id, _testProduct.MasterData.Current.MasterVariant.Id) { Quantity = 1 });
+            Assert.True(response.Success, "AddLineItem Failed");
+            cart = response.Result;
+            SetLineItemTaxAmountAction setLineItemTaxAmountAction = new SetLineItemTaxAmountAction(cart.LineItems[0].Id);
+            setLineItemTaxAmountAction.ExternalTaxAmount = new ExternalTaxAmountDraft(totalGross, new ExternalTaxRateDraft("line-item-ext-tax-rate-draft", cart.Country) { SubRates = subRates });
+            response = await _client.Carts().UpdateCartAsync(cart, new AddLineItemAction(_testProduct.Id, _testProduct.MasterData.Current.MasterVariant.Id) { Quantity = 1 });
+            Assert.True(response.Success, "SetLineItemTaxAmountAction Failed");
+            cart = response.Result;
+
+            //test success of SetShippingMethodTaxAmount
+            SetShippingMethodTaxAmountAction setShippingMethodTaxAmountAction = new SetShippingMethodTaxAmountAction();
+            response = await _client.Carts().UpdateCartAsync(cart, customLineItemTaxAmountAction);
+            Assert.True(response.Success, "SetShippingMethodTaxAmountAction Failed");
+            cart = response.Result;
+
+            //test success of SetCartTotalTaxAction
+            Money totalNetPlusTax = new Money();
+            totalNetPlusTax.CentAmount = cart.TotalPrice.CentAmount + 123;
+            totalNetPlusTax.CurrencyCode = _project.Currencies[0];
+            SetCartTotalTaxAction setCartTotalTaxAction = new SetCartTotalTaxAction(totalNetPlusTax);
+            response = await _client.Carts().UpdateCartAsync(cart, setCartTotalTaxAction);
+            Assert.True(response.Success, "SetCartTotalTaxActionResponse Failed");
+            cart = response.Result;
+
+            string deletedCartId = cart.Id;
+
+            response = await _client.Carts().DeleteCartAsync(cart);
+            Assert.True(response.Success, "Delete Cart Failed");
+
+            cart = response.Result;
+
+            response = await _client.Carts().GetCartByIdAsync(deletedCartId);
+            Assert.False(response.Success, "Confirm Delete Cart Failed");
+        }
+
 
         /// <summary>
         /// Tests the SetShippingAddressAction update action.
