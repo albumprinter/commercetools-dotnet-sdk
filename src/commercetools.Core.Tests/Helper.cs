@@ -224,7 +224,8 @@ namespace commercetools.Core.Tests
                 ShippingAddress = shippingAddress,
                 BillingAddress = billingAddress,
                 TaxMode = TaxMode.ExternalAmount,
-                CustomLineItems = new List<CustomLineItemDraft>()
+                CustomLineItems = new List<CustomLineItemDraft>(),
+                DeleteDaysAfterLastModification = GetRandomNumber(1, 10)
             };
 
             if (!string.IsNullOrWhiteSpace(customerId))

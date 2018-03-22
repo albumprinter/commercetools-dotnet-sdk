@@ -17,6 +17,9 @@ using commercetools.Core.TaxCategories;
 using commercetools.Core.Types;
 using commercetools.Core.Zones;
 using commercetools.Core.Zones.UpdateActions;
+
+using FluentAssertions;
+
 using Newtonsoft.Json.Linq;
 using Xunit;
 using Type = commercetools.Core.Types.Type;
@@ -415,8 +418,9 @@ namespace commercetools.Core.Tests
             Assert.NotNull(cart.CustomLineItems[0].TaxRate);
             Assert.True(cart.Country == cartDraft.Country, "Country not the same");
             Assert.True(cart.InventoryMode == cartDraft.InventoryMode, "InventoryMode not the same");
-            Assert.True(cart.ShippingAddress == cartDraft.ShippingAddress, "ShippingAddress not the same");
-            Assert.True(cart.BillingAddress == cartDraft.BillingAddress, "BillingAddress not the same");
+            cart.ShippingAddress.Should().BeEquivalentTo(cartDraft.ShippingAddress, "ShippingAddress not the same");
+            cart.BillingAddress.Should().BeEquivalentTo(cartDraft.BillingAddress, "BillingAddress not the same");
+
             SetCustomLineItemTaxAmountAction customLineItemTaxAmountAction = new SetCustomLineItemTaxAmountAction(cart.CustomLineItems[0].Id);
             Money totalGross = new Money();
             totalGross.CentAmount = 123;
