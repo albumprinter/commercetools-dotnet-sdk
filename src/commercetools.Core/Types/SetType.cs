@@ -38,7 +38,7 @@ namespace commercetools.Core.Types
                 return;
             }
 
-            this.ElementType = FieldTypeFactory.Create(data);
+            this.ElementType = FieldTypeFactory.Create(data.elementType);
         }
 
         #endregion
